@@ -3,10 +3,42 @@
         {
             "Name": "Syncthing",
             "VaryingCommands":{
-                "Debian": ["testDebian"],
-                "Ubuntu": ["testUbuntu"]
             },
-            "DefaultCommand": ["testDefault"]
+            "DefaultCommand": ["$install syncthing"]
+        },
+        {
+            "Name": "Borg",
+            "VaryingCommands":{
+            },
+            "DefaultCommand": ["$install borgbackup"]
+        },
+        {
+            "Name": "KeepassXC",
+            "VaryingCommands":{
+                "Ubuntu":["$install keepassxc"]
+            },
+            "DefaultCommand": ["$install keepassxc"]
+        },
+        {
+            "Name": "Code",
+            "VaryingCommands":{
+            },
+            "DefaultCommand": [
+                "sudo apt update",
+                "sudo apt install software-properties-common apt-transport-https curl",
+                "curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -",
+                "sudo add-apt-repository \"deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main\"",
+                "sudo apt update",
+                "$install code"
+            ]
         }
-    ]    
+    ], 
+    "Variables":{
+        "install": "sudo apt install -y" 
+    },
+    "UpdateCommands":{
+        "Debian": "sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade && sudo apt autoremove -y",
+        "Ubuntu": "sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade && sudo apt autoremove -y",
+        "Default": "sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade && sudo apt autoremove -y"
+    }
 }

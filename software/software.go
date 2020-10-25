@@ -18,7 +18,28 @@ type Package struct {
 
 // Software reads an Json Config
 type Software struct {
-	Packages []Package
+	Packages       []Package
+	Variables      map[string]string
+	UpdateCommands map[string]string
+}
+
+// EvaluateVariables creates the Variables for the Bash Script
+func (software Software) EvaluateVariables() string {
+	var answer string
+	for key, value := range software.Variables {
+		answer += fmt.Sprintf(`%s='%s'`, key, value)
+		answer += "\n"
+	}
+	answer += "\n"
+	return answer
+}
+
+// EvaluateUpdateCommand creates the UpdateCommand for the Bash Script
+func (software Software) EvaluateUpdateCommand(distro string) string {
+	if cmd, found := software.UpdateCommands[distro]; found {
+		return cmd + "\n"
+	}
+	return software.UpdateCommands["Default"] + "\n"
 }
 
 // EvaluateCommand creates an command string from a package
@@ -67,4 +88,12 @@ func GetDistro() (string, error) {
 	distro = strings.Trim(distro, "\n")
 	distro = strings.Trim(distro, "\t")
 	return distro, nil
+}
+
+func (sw Software) PackageList() []string {
+	answer := make([]string, len(sw.Packages))
+	for index, pkg := range sw.Packages {
+		answer[index] = pkg.Name
+	}
+	return answer
 }
