@@ -16,5 +16,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Debug(sw)
+	distro, err := software.GetDistro()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Debug("Evaluated Distro:\t", distro)
+
+	for _, pkg := range sw.Packages {
+		cmd, err := pkg.EvaluateCommand(distro)
+		if err != nil {
+			log.Error(err)
+		}
+		log.Debug("<Package: ", pkg.Name, "\tCommand: ", cmd[:len(cmd)-1], ">")
+	}
 }
