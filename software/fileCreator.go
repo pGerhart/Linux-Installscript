@@ -5,12 +5,12 @@ import (
 )
 
 // CreateInstallScript evaluates all the variables to the final script
-func (sw Software) CreateInstallScript(desiredPackages []string, distro string) string {
+func (sw Software) CreateInstallScript(desiredPackages []string, distro string) (string, string) {
 	answer := "#!/bin/bash \n"
 	answer += sw.EvaluateUpdateCommand(distro)
 	answer += sw.EvaluateVariables()
 
-	var missingDistro string
+	var warning, missingDistro string
 
 	for _, pkg := range sw.Packages {
 		if _, found := find(desiredPackages, pkg.Name); !found {
@@ -25,13 +25,11 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 			answer += createPackageBlog(cmd, pkg.Name)
 		}
 	}
-
 	if missingDistro != "" {
-		answer += missingDistrosHint()
-		answer += missingDistro
-
+		warning = missingDistrosHint() + missingDistro
 	}
-	return answer
+
+	return answer, warning
 }
 
 func createPackageBlog(cmd, name string) string {
@@ -49,7 +47,8 @@ func missingDistrosHint() string {
 	answer += "#\n"
 	answer += "# The following packages are not supported but those commands may work: \n"
 	answer += "#\n"
-	answer += "# !!!!!!!!!!!!!ATTENTION!!!!!!!!!!!!!\n"
+	// answer += "# !!!!!!!!!!!!!ATTENTION!!!!!!!!!!!!!\n"
+	answer += "\n"
 	return answer
 }
 

@@ -21,8 +21,9 @@ func createSoftwareQuestions(possibleSoftware []string) []*survey.Question {
 		{
 			Name: "selectedSoftware",
 			Prompt: &survey.MultiSelect{
-				Message: "Select software to install on your Machine",
-				Options: possibleSoftware,
+				Message:  "Select software to install on your Machine",
+				Options:  possibleSoftware,
+				PageSize: len(possibleSoftware),
 			},
 		},
 	}

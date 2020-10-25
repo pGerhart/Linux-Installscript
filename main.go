@@ -22,8 +22,11 @@ func main() {
 	}
 
 	desiredPackages := cli.GetDesiredPackages(sw.PackageList())
+	script, warning := sw.CreateInstallScript(desiredPackages, distro)
 
 	log.Debug("Evaluated Distro:", distro)
-
-	log.Info("Created Script:\n" + sw.CreateInstallScript(desiredPackages, distro))
+	log.Info("Created Script:\n" + script)
+	if warning != "" {
+		log.Warning("\n" + warning)
+	}
 }
