@@ -1,0 +1,12 @@
+{
+    "Packages":[
+        {
+            "Name": "Syncthing",
+            "VaryingCommands":{
+                "Debian": ["testDebian"],
+                "Ubuntu": ["testUbuntu"]
+            },
+            "DefaultCommand": ["testDefault"]
+        }
+    ]    
+}
