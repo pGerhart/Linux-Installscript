@@ -12,8 +12,6 @@ import (
 // it can be intstalled on Supported Distros
 type Package struct {
 	Name            string
-	VaryingCommands map[string][]string
-	DefaultCommand  []string
 	log "github.com/sirupsen/logrus"
 )
 
@@ -51,24 +49,6 @@ func (sw Software) PackageList() []string {
 	return answer
 }
 
-// GetDistro checks distro
-func GetDistro() (string, error) {
-	var out bytes.Buffer
-	cmd := exec.Command("lsb_release", "-a")
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		return "", err
-	}
-
-	re := regexp.MustCompile(`Distributor\sID:\s.*\n`)
-	distro := re.FindString(out.String())
-	distro = strings.Trim(distro, "Distributor ID:")
-	distro = strings.Trim(distro, "\n")
-	distro = strings.Trim(distro, "\t")
-	return distro, nil
-}
-
 // CreateInstallScript evaluates all the variables to the final script
 func (sw Software) CreateInstallScript(desiredPackages []string, distro string) (string, string) {
 	answer := "#!/bin/bash \n"
@@ -95,4 +75,25 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 	}
 
 	return answer, warning
+}
+
+// GetDistro checks distro
+func GetDistro() (string, error) {
+	if runtime.GOOS != "Linux" {
+		return "", &OSNotSupportedError{runtime.GOOS}
+	}
+	var out bytes.Buffer
+	cmd := exec.Command("lsb_release", "-a")
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		return "", err
+	}
+
+	re := regexp.MustCompile(`Distributor\sID:\s.*\n`)
+	distro := re.FindString(out.String())
+	distro = strings.Trim(distro, "Distributor ID:")
+	distro = strings.Trim(distro, "\n")
+	distro = strings.Trim(distro, "\t")
+	return distro, nil
 }
