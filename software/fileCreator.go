@@ -1,37 +1,5 @@
 package software
 
-import (
-	log "github.com/sirupsen/logrus"
-)
-
-// CreateInstallScript evaluates all the variables to the final script
-func (sw Software) CreateInstallScript(desiredPackages []string, distro string) (string, string) {
-	answer := "#!/bin/bash \n"
-	answer += sw.EvaluateUpdateCommand(distro)
-	answer += sw.EvaluateVariables()
-
-	var warning, missingDistro string
-
-	for _, pkg := range sw.Packages {
-		if _, found := find(desiredPackages, pkg.Name); !found {
-			continue
-		}
-
-		cmd, err := pkg.EvaluateCommand(distro)
-		if err != nil {
-			log.Error(err)
-			missingDistro += createPackageBlog(cmd, pkg.Name)
-		} else {
-			answer += createPackageBlog(cmd, pkg.Name)
-		}
-	}
-	if missingDistro != "" {
-		warning = missingDistrosHint() + missingDistro
-	}
-
-	return answer, warning
-}
-
 func createPackageBlog(cmd, name string) string {
 	answer := "# ----------------------------------------------------\n"
 	answer += "# " + name + "\n"

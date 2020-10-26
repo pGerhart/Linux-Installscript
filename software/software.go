@@ -14,7 +14,8 @@ type Package struct {
 	Name            string
 	VaryingCommands map[string][]string
 	DefaultCommand  []string
-}
+	log "github.com/sirupsen/logrus"
+)
 
 // Software reads an Json Config
 type Software struct {
@@ -42,34 +43,12 @@ func (software Software) EvaluateUpdateCommand(distro string) string {
 	return software.UpdateCommands["Default"] + "\n"
 }
 
-// EvaluateCommand creates an command string from a package
-func (pkg Package) EvaluateCommand(distro string) (string, error) {
-	if len(pkg.VaryingCommands) == 0 {
-		return cmdToString(pkg.DefaultCommand), nil
-	}
-	if val, ok := pkg.VaryingCommands[distro]; ok {
-		return cmdToString(val), nil
-	}
-	return cmdToString(pkg.DefaultCommand), &DistroNotSupportedError{pkg, distro}
-}
-
-func cmdToString(cmd []string) string {
-	var answer string
-	for _, line := range cmd {
-		answer += line + "\n"
+func (sw Software) PackageList() []string {
+	answer := make([]string, len(sw.Packages))
+	for index, pkg := range sw.Packages {
+		answer[index] = pkg.Name
 	}
 	return answer
-}
-
-// DistroNotSupportedError will be raised when there is no custom command
-// for the wanted distro
-type DistroNotSupportedError struct {
-	Pkg    Package
-	Distro string
-}
-
-func (e *DistroNotSupportedError) Error() string {
-	return fmt.Sprintf("Package %s has no custom command for distro %s", e.Pkg.Name, e.Distro)
 }
 
 // GetDistro checks distro
@@ -90,10 +69,30 @@ func GetDistro() (string, error) {
 	return distro, nil
 }
 
-func (sw Software) PackageList() []string {
-	answer := make([]string, len(sw.Packages))
-	for index, pkg := range sw.Packages {
-		answer[index] = pkg.Name
+// CreateInstallScript evaluates all the variables to the final script
+func (sw Software) CreateInstallScript(desiredPackages []string, distro string) (string, string) {
+	answer := "#!/bin/bash \n"
+	answer += sw.EvaluateUpdateCommand(distro)
+	answer += sw.EvaluateVariables()
+
+	var warning, missingDistro string
+
+	for _, pkg := range sw.Packages {
+		if _, found := find(desiredPackages, pkg.Name); !found {
+			continue
+		}
+
+		cmd, err := pkg.EvaluateCommand(distro)
+		if err != nil {
+			log.Error(err)
+			missingDistro += createPackageBlog(cmd, pkg.Name)
+		} else {
+			answer += createPackageBlog(cmd, pkg.Name)
+		}
 	}
-	return answer
+	if missingDistro != "" {
+		warning = missingDistrosHint() + missingDistro
+	}
+
+	return answer, warning
 }
