@@ -5,13 +5,9 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strings"
-)
 
-// Package represents a software and the commands such that
-// it can be intstalled on Supported Distros
-type Package struct {
-	Name            string
 	log "github.com/sirupsen/logrus"
 )
 
