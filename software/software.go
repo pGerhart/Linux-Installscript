@@ -68,7 +68,7 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 		}
 	}
 	if missingDistro != "" {
-		warning = missingDistrosHint() + missingDistro
+		warning = missingDistro
 		for key, value := range sw.Variables {
 			warning = strings.Replace(warning, "$"+key, value, -1)
 		}

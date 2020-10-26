@@ -10,7 +10,7 @@ func createPackageBlog(cmd, name string) string {
 	return answer
 }
 
-func missingDistrosHint() string {
+func MissingDistrosHint() string {
 	answer := "# !!!!!!!!!!!!!ATTENTION!!!!!!!!!!!!!\n"
 	answer += "#\n"
 	answer += "# The following packages are not supported but those commands may work: \n"
