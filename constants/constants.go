@@ -1,5 +1,5 @@
 package constants
 
 const (
-	OUTFILE = "installScript.sh"
+	SOFTWAREFILE = "providedSoftware.json"
 )
