@@ -53,6 +53,26 @@ func AppendToFile(path, text string) (int, error) {
 	return writtenBytes, nil
 }
 
+// WriteToFile creates a textfile
+// returns written Bytes and Error
+func WriteToFile(path, text string) (int, error) {
+	file, err := os.Create(path)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+	writtenBytes, err := file.WriteString(text)
+	if err != nil {
+		return writtenBytes, err
+	}
+	return writtenBytes, nil
+}
+
+// MakeExecutable chages the file Permissions to 0755
+func MakeExecutable(path string) error {
+	return os.Chmod(path, 0755)
+}
+
 func CopyFile(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {

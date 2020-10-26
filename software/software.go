@@ -45,7 +45,8 @@ func (sw Software) PackageList() []string {
 	return answer
 }
 
-// CreateInstallScript evaluates all the variables to the final script
+// CreateInstallScript evaluates all the variables to the final script and
+// returns the script and the warning for all not supported packages.
 func (sw Software) CreateInstallScript(desiredPackages []string, distro string) (string, string) {
 	answer := "#!/bin/bash \n"
 	answer += sw.EvaluateUpdateCommand(distro)
@@ -68,6 +69,9 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 	}
 	if missingDistro != "" {
 		warning = missingDistrosHint() + missingDistro
+		for key, value := range sw.Variables {
+			warning = strings.Replace(warning, "$"+key, value, -1)
+		}
 	}
 
 	return answer, warning
@@ -75,7 +79,7 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 
 // GetDistro checks distro
 func GetDistro() (string, error) {
-	if runtime.GOOS != "Linux" {
+	if runtime.GOOS != "linux" {
 		return "", &OSNotSupportedError{runtime.GOOS}
 	}
 	var out bytes.Buffer
