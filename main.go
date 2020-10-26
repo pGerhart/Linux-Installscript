@@ -41,7 +41,7 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Info("Writing install script into file: ", args.Outpath)
-	log.Info("run /bin/sh ", args.Outpath, " to install your selected software")
+	log.Info("to install your selected software run: \n/bin/sh ", args.Outpath)
 
 }
 
