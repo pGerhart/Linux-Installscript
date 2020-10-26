@@ -58,6 +58,14 @@
         {
             "Name": "VLC",
             "DefaultCommand": ["$install vlc"]
+        },
+        {
+            "Name": "Gimp",
+            "DefaultCommand": ["$install gimp"]
+        },
+        {
+            "Name": "Inkscape",
+            "DefaultCommand": ["$install inkscape"]
         }
 
     ], 

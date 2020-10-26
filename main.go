@@ -40,6 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Info("Writing install script into file: ", args.Outpath)
 
 }
 

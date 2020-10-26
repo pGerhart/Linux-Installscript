@@ -44,9 +44,9 @@ func ParseJSON() (Software, error) {
 	sw := &Software{}
 	if getJson(constants.SOFTWAREURL, sw) != nil {
 		log.Debug("Could not fetch remote Repo for provided software")
-		log.Debug("Loaded provided software from file: ", constants.SOFTWAREFILE)
+		log.Info("Loading provided software from file: ", constants.SOFTWAREFILE)
 		return ParseJSONFile(constants.SOFTWAREFILE)
 	}
-	log.Debug("Loaded provided software from URL: ", constants.SOFTWAREURL)
+	log.Info("Loading provided software from URL: ", constants.SOFTWAREURL)
 	return *sw, nil
 }
