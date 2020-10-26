@@ -2,7 +2,6 @@ package main
 
 import (
 	"installscript/cli"
-	"installscript/constants"
 	"installscript/helpers"
 	"installscript/software"
 	"os"
@@ -12,16 +11,20 @@ import (
 )
 
 func init() {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
-	sw, err := software.ParseJSON(constants.SOFTWAREFILE)
+	args := parseArgs()
+	if args.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
+	log.Debug("Evaluated Distro: ", args.Distro)
+
+	sw, err := software.ParseJSON()
 	if err != nil {
 		log.Fatal(err)
 	}
-	args := parseArgs()
-	log.Debug("Evaluated Distro: ", args.Distro)
 
 	desiredPackages := cli.GetDesiredPackages(sw.PackageList())
 	script, warning := sw.CreateInstallScript(desiredPackages, args.Distro)
@@ -52,6 +55,11 @@ func parseArgs() Args {
 		Help:     "ignores Warnings and writes all Commands to the Script",
 		Default:  false,
 	})
+	verbose := parser.Flag("v", "verbose", &argparse.Options{
+		Required: false,
+		Help:     "Set output level to debug",
+		Default:  false,
+	})
 	customDistro := parser.String("d", "distro", &argparse.Options{
 		Required: false,
 		Help:     "Custom Distro to create script for.",
@@ -72,6 +80,7 @@ func parseArgs() Args {
 	return Args{
 		Outpath:        *outpath,
 		IgnoreWarnings: *ignoreWarnings,
+		Verbose:        *verbose,
 		Distro:         distro,
 	}
 }
@@ -79,5 +88,6 @@ func parseArgs() Args {
 type Args struct {
 	Outpath        string
 	IgnoreWarnings bool
+	Verbose        bool
 	Distro         string
 }
