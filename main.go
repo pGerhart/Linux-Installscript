@@ -41,11 +41,12 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Info("Writing install script into file: ", args.Outpath)
+	log.Info("run /bin/sh ", args.Outpath, " to install your selected software")
 
 }
 
 func parseArgs() Args {
-	parser := argparse.NewParser("InstallScript", "Creates an install Script for Linux.")
+	parser := argparse.NewParser("InstallScript", "Creates an bash install script for Linux")
 	outpath := parser.String("o", "outpath", &argparse.Options{
 		Required: false,
 		Help:     "Path in which the install script is written",
@@ -53,7 +54,7 @@ func parseArgs() Args {
 	})
 	ignoreWarnings := parser.Flag("i", "ignoreWarnings", &argparse.Options{
 		Required: false,
-		Help:     "ignores Warnings and writes all Commands to the Script",
+		Help:     "ignores warnings and writes all commands to the script",
 		Default:  false,
 	})
 	verbose := parser.Flag("v", "verbose", &argparse.Options{
@@ -63,7 +64,7 @@ func parseArgs() Args {
 	})
 	customDistro := parser.String("d", "distro", &argparse.Options{
 		Required: false,
-		Help:     "Custom Distro to create script for.",
+		Help:     "Custom distro to create script for",
 	})
 
 	err := parser.Parse(os.Args)
