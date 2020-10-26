@@ -19,5 +19,7 @@ type OSNotSupportedError struct {
 }
 
 func (e *OSNotSupportedError) Error() string {
-	return fmt.Sprintf("This Script currently does not support the OS %s", e.OS)
+	answer := fmt.Sprintf("This Script currently does not support the OS %s\n", e.OS)
+	answer += "Try to run the Script with the option -d <DistroName> to create the script for a supported distro."
+	return answer
 }
