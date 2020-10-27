@@ -4,73 +4,74 @@
             "Name": "Syncthing",
             "VaryingCommands":{
                 "Ubuntu":[
-                    "$install curl",
+                    "$INSTALL curl",
                     "curl -s https://syncthing.net/release-key.txt | sudo apt-key add -",
                     "echo \"deb https://apt.syncthing.net/ syncthing stable\" | sudo tee /etc/apt/sources.list.d/syncthing.list",
 	                "sudo apt update",
-                    "$install syncthing",
+                    "$INSTALL syncthing",
 	                "sudo ln -s /usr/share/applications/syncthing-start.desktop /etc/xdg/autostart/"
                 ],
                 "Debian":[
-                    "$install syncthing",
+                    "$INSTALL syncthing",
                     "sudo ln -s /usr/share/applications/syncthing-start.desktop /etc/xdg/autostart/"
                 ]
             },
             "DefaultCommand": [
-                "$install syncthing",
+                "$INSTALL syncthing",
                 "sudo ln -s /usr/share/applications/syncthing-start.desktop /etc/xdg/autostart/"
             ]
         },
         {
             "Name": "Borg",
-            "DefaultCommand": ["$install borgbackup"]
+            "DefaultCommand": ["$INSTALL borgbackup"]
         },
         {
             "Name": "KeepassXC",
-            "DefaultCommand": ["$install keepassxc"]
+            "DefaultCommand": ["$INSTALL keepassxc"]
         },
         {
             "Name": "Thunderbird",
-            "DefaultCommand": ["$install thunderbird"]
+            "DefaultCommand": ["$INSTALL thunderbird"]
         },
         {
             "Name": "Code",
             "DefaultCommand": [
                 "sudo apt update",
-                "$isntall software-properties-common apt-transport-https curl",
+                "$INSTALL software-properties-common apt-transport-https curl",
                 "curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -",
                 "sudo add-apt-repository \"deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main\"",
                 "sudo apt update",
-                "$install code"
+                "$INSTALL code"
             ]
         },
         {
             "Name": "Latex",
             "DefaultCommand": [
-                "$install texlive-latex-extra",
-                "$install latexmk texlive-lang-german"
+                "$INSTALL texlive-latex-extra",
+                "$INSTALL latexmk texlive-lang-german"
             ]
         },
         {
-            "Name": "Libre Office",
-            "DefaultCommand": ["$install libreoffice"]
+            "Name": "LibreOffice",
+            "DefaultCommand": ["$INSTALL libreoffice"]
         },
         {
             "Name": "VLC",
-            "DefaultCommand": ["$install vlc"]
+            "DefaultCommand": ["$INSTALL vlc"]
         },
         {
             "Name": "Gimp",
-            "DefaultCommand": ["$install gimp"]
+            "DefaultCommand": ["$INSTALL gimp"]
         },
         {
             "Name": "Inkscape",
-            "DefaultCommand": ["$install inkscape"]
+            "DefaultCommand": ["$INSTALL inkscape"]
         }
 
     ], 
     "Variables":{
-        "install": "sudo apt install -y" 
+        "INSTALL": "sudo apt-get install -y",
+        "LOG_FILE": "install_script_log.txt"
     },
     "UpdateCommands":{
         "Debian": "sudo apt update && sudo apt upgrade -y && sudo apt dist-upgrade && sudo apt autoremove -y",

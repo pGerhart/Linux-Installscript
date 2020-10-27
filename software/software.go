@@ -52,7 +52,8 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 	answer += sw.EvaluateUpdateCommand(distro)
 	answer += sw.EvaluateVariables()
 
-	var warning, missingDistro string
+	var missingDistro string
+	tryingToInstall := make([]string, 0)
 
 	for _, pkg := range sw.Packages {
 		if _, found := find(desiredPackages, pkg.Name); !found {
@@ -65,16 +66,20 @@ func (sw Software) CreateInstallScript(desiredPackages []string, distro string) 
 			missingDistro += createPackageBlog(cmd, pkg.Name)
 		} else {
 			answer += createPackageBlog(cmd, pkg.Name)
+			tryingToInstall = append(tryingToInstall, pkg.Name)
 		}
 	}
-	if missingDistro != "" {
-		warning = missingDistro
-		for key, value := range sw.Variables {
-			warning = strings.Replace(warning, "$"+key, value, -1)
-		}
+	for key, value := range sw.Variables {
+		missingDistro = strings.Replace(missingDistro, "$"+key, value, -1)
+		answer = strings.Replace(answer, "$"+key, value, -1)
+	}
+	answer += "# Clear old Logs\n" + `rm "$LOG_FILE"` + "\n\n"
+	answer += `echo "testing if installation succeded, writing logs to $(pwd)/$LOG_file"` + "\n\n"
+	for _, name := range tryingToInstall {
+		answer += checkSuccessfullInstall(name)
 	}
 
-	return answer, warning
+	return answer, missingDistro
 }
 
 // GetDistro checks distro

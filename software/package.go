@@ -21,8 +21,13 @@ func (pkg Package) EvaluateCommand(distro string) (string, error) {
 
 func cmdToString(cmd []string) string {
 	var answer string
-	for _, line := range cmd {
-		answer += line + "\n"
+	for index, line := range cmd {
+		answer += line
+		if index < len(cmd)-1 {
+			answer += " 2>&1 && \\ \n"
+		} else {
+			answer += " 2>&1"
+		}
 	}
 	return answer
 }
